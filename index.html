@@ -2,64 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frontend Code Runner</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background: #1e1e1e;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-    header {
-      padding: 0.5rem;
-      background: #333;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    select, button {
-      margin-left: 1rem;
-    }
-    #editor {
-      height: 50vh;
-    }
-    #output {
-      flex: 1;
-      background: black;
-      color: white;
-      padding: 1rem;
-      overflow: auto;
-      white-space: pre-wrap;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Online Code Runner</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs/loader.js"></script>
 </head>
 <body>
-  <header>
-    <div>
-      Language:
-      <select id="language">
-        <option value="javascript">JavaScript</option>
-        <option value="html">HTML/CSS</option>
-        <option value="python">Python (Pyodide)</option>
-      </select>
-      <button onclick="runCode()">Run ▶️</button>
-    </div>
-  </header>
-
+  <div class="top-bar">
+    <label for="language">Language:</label>
+    <select id="language" onchange="language.onchange()">
+      <option value="javascript">JavaScript</option>
+      <option value="python">Python</option>
+      <option value="html">HTML</option>
+    </select>
+    <button onclick="runCode()">Run ▶️</button>
+  </div>
   <div id="editor"></div>
-  <div id="output"></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs/loader.js"></script>
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+  <div id="output" class="output"></div>
   <script src="main.js"></script>
 </body>
 </html>
