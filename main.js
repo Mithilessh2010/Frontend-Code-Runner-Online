@@ -4,7 +4,7 @@ require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1
 
 require(["vs/editor/editor.main"], function () {
   editor = monaco.editor.create(document.getElementById("editor"), {
-    value: "// Write JavaScript, HTML, or Python here!",
+    value: "console.log('Hello from JavaScript!');",
     language: "javascript",
     theme: "vs-dark",
     automaticLayout: true
@@ -30,12 +30,12 @@ async function runCode() {
 
   if (lang === 'javascript') {
     try {
-      const originalLog = console.log;
-      console.log = (...args) => {
-        output.innerHTML += args.join(" ") + "<br>";
-      };
+      const oldLog = console.log;
+      const logs = [];
+      console.log = (...args) => logs.push(args.join(" "));
       eval(code);
-      console.log = originalLog;
+      output.innerHTML = logs.join("<br>") || "✅ No output.";
+      console.log = oldLog;
     } catch (e) {
       output.innerHTML = `<span style="color:red">${e}</span>`;
     }
@@ -50,8 +50,17 @@ async function runCode() {
         pyodide = await loadPyodide();
         pyodideReady = true;
       }
-      let result = await pyodide.runPythonAsync(code);
-      output.textContent = result ?? "Executed.";
+      // Redirect stdout and stderr
+      let stdout = '';
+      pyodide.setStdout({
+        batched: (s) => stdout += s + '\n',
+      });
+      pyodide.setStderr({
+        batched: (s) => stdout += `<span style="color:red">${s}</span>\n`,
+      });
+
+      await pyodide.runPythonAsync(code);
+      output.innerHTML = stdout.trim() || "✅ No output.";
     } catch (err) {
       output.innerHTML = `<span style="color:red">${err}</span>`;
     }
