@@ -1,10 +1,10 @@
-
 let editor, pyodideReady = false, pyodide;
 
 require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs' } });
+
 require(["vs/editor/editor.main"], function () {
   editor = monaco.editor.create(document.getElementById("editor"), {
-    value: "// Write some JavaScript or Python or HTML!",
+    value: "// Write JavaScript, HTML, or Python here!",
     language: "javascript",
     theme: "vs-dark",
     automaticLayout: true
@@ -13,12 +13,12 @@ require(["vs/editor/editor.main"], function () {
 
 language.onchange = () => {
   const lang = language.value;
-  const samples = {
+  const starter = {
     javascript: "console.log('Hello from JavaScript!');",
     html: "<!DOCTYPE html><html><body><h1>Hello from HTML</h1></body></html>",
     python: "print('Hello from Python via Pyodide!')"
   };
-  editor.setValue(samples[lang]);
+  editor.setValue(starter[lang]);
   monaco.editor.setModelLanguage(editor.getModel(), lang === 'html' ? 'html' : lang);
 };
 
@@ -30,10 +30,14 @@ async function runCode() {
 
   if (lang === 'javascript') {
     try {
-      const result = eval(code);
-      output.textContent = result === undefined ? 'Executed.' : result;
+      const originalLog = console.log;
+      console.log = (...args) => {
+        output.innerHTML += args.join(" ") + "<br>";
+      };
+      eval(code);
+      console.log = originalLog;
     } catch (e) {
-      output.textContent = e;
+      output.innerHTML = `<span style="color:red">${e}</span>`;
     }
   } else if (lang === 'html') {
     const iframe = document.createElement("iframe");
@@ -41,15 +45,15 @@ async function runCode() {
     output.innerHTML = '';
     output.appendChild(iframe);
   } else if (lang === 'python') {
-    if (!pyodideReady) {
-      pyodide = await loadPyodide();
-      pyodideReady = true;
-    }
     try {
+      if (!pyodideReady) {
+        pyodide = await loadPyodide();
+        pyodideReady = true;
+      }
       let result = await pyodide.runPythonAsync(code);
       output.textContent = result ?? "Executed.";
     } catch (err) {
-      output.textContent = err;
+      output.innerHTML = `<span style="color:red">${err}</span>`;
     }
   }
 }
