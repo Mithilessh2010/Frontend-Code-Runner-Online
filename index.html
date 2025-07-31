@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,17 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Frontend Code Runner</title>
   <style>
-    body { margin: 0; font-family: sans-serif; background: #1e1e1e; color: white; display: flex; flex-direction: column; height: 100vh; }
-    header { padding: 0.5rem; background: #333; display: flex; justify-content: space-between; align-items: center; }
-    select, button { margin-left: 1rem; }
-    #editor { height: 50vh; }
-    #output { flex: 1; background: black; padding: 1rem; overflow: auto; white-space: pre-wrap; }
-    iframe { width: 100%; height: 100%; border: none; }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #1e1e1e;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      padding: 0.5rem;
+      background: #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    select, button {
+      margin-left: 1rem;
+    }
+    #editor {
+      height: 50vh;
+    }
+    #output {
+      flex: 1;
+      background: black;
+      color: white;
+      padding: 1rem;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
   </style>
 </head>
 <body>
   <header>
-    <div>Language:
+    <div>
+      Language:
       <select id="language">
         <option value="javascript">JavaScript</option>
         <option value="html">HTML/CSS</option>
@@ -25,6 +54,7 @@
       <button onclick="runCode()">Run ▶️</button>
     </div>
   </header>
+
   <div id="editor"></div>
   <div id="output"></div>
 
